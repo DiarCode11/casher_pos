@@ -1,9 +1,13 @@
+import 'package:casher_pos/core/database/database_helper.dart';
+import 'package:casher_pos/core/di/injection.dart';
 import 'package:casher_pos/core/routes/app_router.dart';
-import 'package:casher_pos/features/products/presentation/screen/product_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // wajib, karena ada kode async sebelum runApp
+  await setupLocator();
+  await getIt<DatabaseHelper>().database;   // <-- di sini database dibuat/dibuka
   runApp(const MyApp());
 }
 

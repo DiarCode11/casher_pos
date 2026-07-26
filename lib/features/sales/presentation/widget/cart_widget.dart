@@ -3,6 +3,7 @@ import 'package:casher_pos/features/sales/cubit/cart_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class CurrencyInputFormatter extends TextInputFormatter {
@@ -52,6 +53,11 @@ class _CartWidgetState extends State<CartWidget> {
   void initState() {
     super.initState();
     _cashController = TextEditingController(text: '0');
+    _cashController.addListener(_onCashChanged);
+  }
+
+  void _onCashChanged() {
+    setState(() {});
   }
 
   @override
@@ -60,6 +66,12 @@ class _CartWidgetState extends State<CartWidget> {
     _cashController.dispose();
     super.dispose();
   }
+
+  final NumberFormat _formatter = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: '', // Kosongkan jika prefix 'Rp ' sudah ada di InputDecoration
+    decimalDigits: 0,
+  );
 
   void _openSaveConfirmation(BuildContext context) {
     // Ambil data item keranjang dan nilai cash saat ini
@@ -169,8 +181,8 @@ class _CartWidgetState extends State<CartWidget> {
                 cartCubit.clearCart();
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Item berhasil dihapus!'),
-                    backgroundColor: Colors.red,
+                    content: Text('Transaksi berhasil dibuat!'),
+                    backgroundColor: Colors.green,
                     duration: Duration(seconds: 2), // Durasi tampil
                   ),
                 );
@@ -321,6 +333,24 @@ class _CartWidgetState extends State<CartWidget> {
                       SizedBox(
                         width: 180,
                         child: TextField(
+                          onChanged: (value) {
+                            // 1. Ambil hanya karakter angka
+                            String cleanText = value.replaceAll(RegExp(r'[^0-9]'), '');
+
+                            // 2. Parse ke int (otomatis mengubah "000" jadi 0)
+                            int number = int.tryParse(cleanText) ?? 0;
+
+                            // 3. Format kembali ke string berpemisah titik (contoh: 50000 -> "50.000", 0 -> "0")
+                            String formattedText = _formatter.format(number).trim();
+
+                            // 4. Update nilai controller jika teks berubah agar kursor tetap di posisi akhir
+                            if (_cashController.text != formattedText) {
+                              _cashController.value = TextEditingValue(
+                                text: formattedText,
+                                selection: TextSelection.collapsed(offset: formattedText.length),
+                              );
+                            }
+                          },
                           controller: _cashController, // Terhubung ke state controller
                           textAlign: TextAlign.right,
                           keyboardType: TextInputType.number,
@@ -343,18 +373,25 @@ class _CartWidgetState extends State<CartWidget> {
                   SizedBox(
                     width: double.infinity,
                     height: 40,
-                    child: TextButton.icon(
-                      onPressed: () => _openSaveConfirmation(context),
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                      ),
-                      icon: const SizedBox.shrink(), // Karena pakai TextButton.icon tapi tanpa icon, bisa dikosongkan atau ganti TextButton biasa
-                      label: const Text('Bayar', style: TextStyle(fontSize: 17)),
+                    child: Builder(
+                      builder: (context) {
+                        final cleanText = _cashController.text.replaceAll(RegExp(r'[^0-9]'), '');
+                        final cashAmount = int.tryParse(cleanText) ?? 0;
+                        final subTotal = context.watch<CartCubit>().getSubTotal();
+                        final isPayable = cashAmount >= subTotal && subTotal > 0;
+
+                        return TextButton(
+                          onPressed: isPayable ? () => _openSaveConfirmation(context) : null,
+                          style: TextButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            backgroundColor: isPayable ? Colors.green : Colors.grey,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text('Bayar', style: TextStyle(fontSize: 17, color: Colors.white)),
+                        );
+                      },
                     ),
                   )
                 ],

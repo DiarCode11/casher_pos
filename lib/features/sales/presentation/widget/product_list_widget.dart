@@ -1,5 +1,6 @@
 import 'package:casher_pos/features/products/cubit/product_state.dart';
 import 'package:casher_pos/features/sales/cubit/sales_cubit.dart';
+import 'package:casher_pos/features/sales/cubit/sales_state.dart';
 import 'package:casher_pos/features/sales/presentation/widget/sales_product_card.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
@@ -10,16 +11,16 @@ class ProductListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SalesCubit, ProductState>(
+    return BlocBuilder<SalesCubit, SalesState>(
       builder: (context, state) {
         switch (state.status) {
-          case ProductStatus.initial:
+          case SalesStatus.initial:
             return const SizedBox();
 
-          case ProductStatus.loading:
+          case SalesStatus.loading:
             return const Center(child: CircularProgressIndicator());
 
-          case ProductStatus.success:
+          case SalesStatus.success:
             if (state.products.isEmpty) {
               return const Center(child: Text('Belum ada produk'));
             }
@@ -39,7 +40,7 @@ class ProductListWidget extends StatelessWidget {
               },
             );
 
-          case ProductStatus.failure:
+          case SalesStatus.failure:
             return Center(child: Text('Error: ${state.errorMessage}'));
         }
       }

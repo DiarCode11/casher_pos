@@ -1,6 +1,8 @@
+import 'package:casher_pos/core/di/injection.dart';
 import 'package:casher_pos/features/sales/cubit/cart_cubit.dart';
 import 'package:casher_pos/features/sales/cubit/cart_state.dart';
 import 'package:casher_pos/features/sales/cubit/sales_cubit.dart';
+import 'package:casher_pos/features/sales/data/repositories/sales_repository.dart';
 import 'package:casher_pos/features/sales/presentation/widget/cart_widget.dart';
 import 'package:casher_pos/features/sales/presentation/widget/product_list_widget.dart';
 import 'package:casher_pos/features/sales/presentation/widget/sales_top_bar_widget.dart';
@@ -14,7 +16,7 @@ class SalesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => SalesCubit()..loadProducts()),
+        BlocProvider(create: (context) => SalesCubit(repository: getIt<SalesRepository>())..loadProducts()),
         BlocProvider(create: (context) {
           return CartCubit(salesCubit: context.read<SalesCubit>());
         }),

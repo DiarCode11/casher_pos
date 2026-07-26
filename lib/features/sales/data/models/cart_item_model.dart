@@ -1,5 +1,5 @@
 class CartItemModel {
-  final String productId;
+  final int productId;
   final String name;
   final int price;
   final int quantity;
@@ -14,7 +14,7 @@ class CartItemModel {
   int get subtotal => price * quantity;
 
   CartItemModel copyWith({
-    String? productId,
+    int? productId,
     String? name,
     int? price,
     int? quantity,

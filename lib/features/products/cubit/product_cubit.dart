@@ -8,6 +8,7 @@ class ProductCubit extends Cubit<ProductState> {
   ProductCubit() : super(const ProductState());
 
   Future<void> loadProducts() async {
+    if (isClosed) return; 
     emit(state.copyWith(status: ProductStatus.loading));
 
     await Future.delayed(const Duration(seconds: 1));

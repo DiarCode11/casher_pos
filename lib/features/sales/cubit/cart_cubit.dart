@@ -33,14 +33,14 @@ class CartCubit extends Cubit<CartState> {
     print(state.listItem());
   }
 
-  bool isStockLimitReached(String productId) {
+  bool isStockLimitReached(int productId) {
     final currentQty = state.items.where((item) => item.productId == productId).firstOrNull?.quantity ?? 0;
     final stock = salesCubit.getStock(productId);
 
     return currentQty >= stock;
   }
 
-  void increaseQtyItem(String id) {
+  void increaseQtyItem(int id) {
     final currentItems = List<CartItemModel>.from(state.items);
 
     final index = currentItems.indexWhere((item) => item.productId == id);
@@ -57,7 +57,7 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
-  void decreaseQtyItem(String id) {
+  void decreaseQtyItem(int id) {
     final currentItems = List<CartItemModel>.from(state.items);
 
     final index = currentItems.indexWhere((item) => item.productId == id);
@@ -76,14 +76,14 @@ class CartCubit extends Cubit<CartState> {
 
   }
 
-  void removeItem(String productId) {
+  void removeItem(int productId) {
     final updatedItems = state.items
         .where((item) => item.productId != productId)
         .toList();
     emit(state.copyWith(items: updatedItems));
   }
 
-  void updateQuantity(String productId, int quantity) {
+  void updateQuantity(int productId, int quantity) {
     if (quantity <= 0) {
       removeItem(productId);
       return;
