@@ -1,10 +1,8 @@
 import 'package:casher_pos/core/extensions/currency_ext.dart';
-import 'package:casher_pos/features/products/data/models/product_model.dart';
 import 'package:casher_pos/features/sales/cubit/cart_cubit.dart';
 import 'package:casher_pos/features/sales/data/models/cart_item_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:casher_pos/features/sales/data/models/sales_product_model.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

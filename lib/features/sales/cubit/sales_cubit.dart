@@ -10,8 +10,13 @@ class SalesCubit extends Cubit<SalesState> {
 
   Future<void> loadProducts() async {
     emit(state.copyWith(status: SalesStatus.loading));
+    if (isClosed) return; 
+
+    await Future.delayed(Duration(seconds: 1));
+    if (isClosed) return; 
 
     final products = await repository.getProducts();
+    if (isClosed) return; 
 
     emit(state.copyWith(status: SalesStatus.success, products: products));
   }
