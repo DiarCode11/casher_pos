@@ -15,35 +15,21 @@ class SalesTopBarWidget extends StatelessWidget {
           ))
         ),
         height: 70,
-        child: Row(
-          children: [
-            SizedBox(width: 20,),
-            SizedBox(
-              width: 250, // atur sesuai kebutuhan
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Cari...',
-                  prefixIcon: const Icon(LucideIcons.search, color: Colors.grey),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey.shade400),
-                  ),
-                ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Penjualan", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text("Daftar produk tersedia", style: TextStyle(fontSize: 14, color: Colors.grey.shade600))
+                ],
               ),
-            )
-          ],
-        ),
+            ],
+          ),
+        )
     );
   }
 }
