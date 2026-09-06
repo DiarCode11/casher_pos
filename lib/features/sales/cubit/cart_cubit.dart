@@ -33,6 +33,10 @@ class CartCubit extends Cubit<CartState> {
     print(state.listItem());
   }
 
+  bool isProductInCart(int productId) {
+    return state.items.any((item) => item.productId == productId);
+  }
+
   bool isStockLimitReached(int productId) {
     final currentQty = state.items.where((item) => item.productId == productId).firstOrNull?.quantity ?? 0;
     final stock = salesCubit.getStock(productId);

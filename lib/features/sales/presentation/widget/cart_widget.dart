@@ -39,7 +39,7 @@ class CurrencyInputFormatter extends TextInputFormatter {
 
 // 1. Ubah menjadi StatefulWidget
 class CartWidget extends StatefulWidget {
-  CartWidget({super.key});
+  const CartWidget({super.key});
 
   @override
   State<CartWidget> createState() => _CartWidgetState();
@@ -213,15 +213,24 @@ class _CartWidgetState extends State<CartWidget> {
           // Header cart
           const Padding(
             padding: EdgeInsets.all(16),
-            child: Text(
-              'Keranjang',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            child: Row(
+              children: [
+                Icon(LucideIcons.shoppingCart),
+                SizedBox(width: 10,),
+                Text(
+                  'Keranjang',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
           ),
           
           // List item cart, mengisi sisa tinggi
           Expanded(
-            child: ListView.builder(
+            child: cartItems.isEmpty ? Center(
+              child: Text("Keranjang kosong", style: TextStyle(color: Colors.grey.shade500),)
+              )
+            : ListView.builder(
               itemCount: cartItems.length,
               itemBuilder: (context, index) {
                 final item = cartItems[index]; 
@@ -314,11 +323,11 @@ class _CartWidgetState extends State<CartWidget> {
                     children: [
                       const Text(
                         'Subtotal Produk', 
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       Text(
                         (context.watch<CartCubit>().getSubTotal()).toRupiah(), 
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     ],
                   ),
@@ -328,7 +337,7 @@ class _CartWidgetState extends State<CartWidget> {
                     children: [
                       const Text(
                         'Cash', 
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.green),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.green),
                       ),
                       SizedBox(
                         width: 180,
@@ -358,10 +367,10 @@ class _CartWidgetState extends State<CartWidget> {
                             FilteringTextInputFormatter.digitsOnly,
                             CurrencyInputFormatter(),
                           ],
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.green, fontSize: 18),
+                          style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.green, fontSize: 16),
                           decoration: const InputDecoration(
                             prefixText: 'Rp ',
-                            prefixStyle: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 18),
+                            prefixStyle: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 16),
                             isDense: true,
                             contentPadding: EdgeInsets.only(bottom: 4),
                           ),

@@ -1,40 +1,41 @@
 // shared/widgets/sidebar_menu.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class SidebarMenu extends StatelessWidget {
-  const SidebarMenu({super.key});
+  final StatefulNavigationShell navigationShell;
 
+  const SidebarMenu({required this.navigationShell, super.key});
+
+  // String route dihapus karena kita pakai urutan Index sekarang
   static const List<_MenuData> _menus = [
-    _MenuData(Icons.shopping_cart_checkout_sharp, 'Penjualan', '/sales'),
-    _MenuData(Icons.shopping_bag, 'Pembelian', '/purchases'),
-    _MenuData(Icons.receipt_long, 'Transaksi', '/transaction'),
-    _MenuData(Icons.inventory_2, 'Produk', '/product'),
-    _MenuData(Icons.warehouse, 'Stok', '/stock'),
-    _MenuData(Icons.bar_chart, 'Laporan Penjualan', '/report'),
-    _MenuData(Icons.people_outline, 'User & Kasir', '/user'),
-    _MenuData(Icons.settings_outlined, 'Pengaturan', '/settings'),
+    _MenuData(LucideIcons.shoppingCart, 'Penjualan'), // Index 0
+    _MenuData(LucideIcons.shoppingBag, 'Pembelian'),  // Index 1
+    _MenuData(LucideIcons.receipt, 'Transaksi'),      // Index 2
+    _MenuData(LucideIcons.package, 'Produk'),         // Index 3
+    _MenuData(LucideIcons.warehouse, 'Stok'),         // Index 4
+    _MenuData(LucideIcons.barChart2, 'Laporan'),      // Index 5
+    _MenuData(LucideIcons.users, 'User & Kasir'),     // Index 6
+    _MenuData(LucideIcons.settings, 'Pengaturan'),    // Index 7
   ];
 
   @override
   Widget build(BuildContext context) {
-    final currentPath = GoRouterState.of(context).uri.toString();
+    // Ambil index tab yang sedang aktif
+    final activeIndex = navigationShell.currentIndex;
 
     return Container(
       width: 80,
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(
-          right: BorderSide(
-            color: Colors.grey.shade200, // warna garis border
-            width: 2, // ketebalan border
-          ),
+          right: BorderSide(color: Colors.grey.shade200, width: 2),
         ),
       ),
       child: Column(
         children: [
           const SizedBox(height: 24),
-
           // Logo
           Container(
             width: 40,
@@ -45,30 +46,40 @@ class SidebarMenu extends StatelessWidget {
             ),
             child: Icon(Icons.point_of_sale, color: Colors.green.shade700, size: 20),
           ),
-
           const SizedBox(height: 28),
 
           // Menu Items
           Expanded(
             child: ListView(
               physics: const NeverScrollableScrollPhysics(),
-              children: _menus
-                  .map((menu) => _MenuItem(
-                        icon: menu.icon,
-                        label: menu.label,
-                        route: menu.route,
-                        isActive: currentPath == menu.route,
-                      ))
-                  .toList(),
+              // Gunakan asMap untuk mendapatkan Index dan Value (Menu)
+              children: _menus.asMap().entries.map((entry) {
+                final index = entry.key;
+                final menu = entry.value;
+                
+                return _MenuItem(
+                  icon: menu.icon,
+                  label: menu.label,
+                  isActive: activeIndex == index,
+                  onTap: () {
+                    // Pindah tab menggunakan index branch
+                    navigationShell.goBranch(
+                      index,
+                      // Jika tab yang sama di-klik, reset ke halaman awalnya
+                      initialLocation: index == navigationShell.currentIndex,
+                    );
+                  },
+                );
+              }).toList(),
             ),
           ),
 
-          // Logout di bawah
+          // Logout tetap pakai context.go karena dia keluar dari sistem tab
           _MenuItem(
             icon: Icons.logout,
             label: 'Logout',
-            route: '/login',
             isActive: false,
+            onTap: () => context.go('/login'), 
           ),
           const SizedBox(height: 20),
         ],
@@ -80,21 +91,20 @@ class SidebarMenu extends StatelessWidget {
 class _MenuData {
   final IconData icon;
   final String label;
-  final String route;
-  const _MenuData(this.icon, this.label, this.route);
+  const _MenuData(this.icon, this.label);
 }
 
 class _MenuItem extends StatelessWidget {
   final IconData icon;
   final String label;
-  final String route;
   final bool isActive;
+  final VoidCallback onTap; // Ganti dari route String jadi fungsi callback
 
   const _MenuItem({
     required this.icon,
     required this.label,
-    required this.route,
     required this.isActive,
+    required this.onTap,
   });
 
   static const Color primaryColor = Color.fromARGB(255, 8, 145, 15);
@@ -114,15 +124,14 @@ class _MenuItem extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          hoverColor: Colors.transparent, // <-- hilangkan warna hover
-          splashColor: Colors.transparent, // hilangkan efek splash saat diklik
+          hoverColor: Colors.transparent,
+          splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          onTap: () => context.go(route),
+          onTap: onTap, // <-- Panggil fungsi yang dikirim dari atas
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 0),
             child: Stack(
               children: [
-                // Background gradasi (kalau aktif)
                 Container(
                   width: double.infinity,
                   height: 52,
@@ -145,8 +154,6 @@ class _MenuItem extends StatelessWidget {
                     size: 22,
                   ),
                 ),
-
-                // Border kiri rounded (kalau aktif)
                 if (isActive)
                   Positioned(
                     left: 0,

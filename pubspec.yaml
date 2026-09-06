@@ -48,6 +48,7 @@ dependencies:
   path: ^1.9.1
   sqflite_common_ffi: ^2.3.0
   get_it: ^9.2.1
+  shadcn_flutter: ^0.0.47
 
 dev_dependencies:
   flutter_test:
