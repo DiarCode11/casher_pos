@@ -1,4 +1,4 @@
-import 'package:casher_pos/features/sales/data/datasources/sales_local_datasource.dart';
+import 'package:casher_pos/core/database/database_helper.dart';
 import 'package:casher_pos/features/sales/data/models/sales_product_model.dart';
 
 abstract class SalesRepository {
@@ -6,14 +6,19 @@ abstract class SalesRepository {
 }
 
 class SalesRepositoryImpl implements SalesRepository {
-  final SalesLocalDataSource localDataSource;
+  final DatabaseHelper databaseHelper;
 
-  SalesRepositoryImpl({required this.localDataSource});
+  SalesRepositoryImpl({required this.databaseHelper});
 
   @override
   Future<List<SalesProductModel>> getProducts() async {
     try {
-      return await localDataSource.getProducts();
+      final db = await databaseHelper.database;
+      final rawProducts = await db.rawQuery(
+        'SELECT * FROM products WHERE deleted_at IS NULL;',
+      );
+
+      return rawProducts.map(SalesProductModel.fromMap).toList();
     } catch (e) {
       throw Exception("Gagal mengambil data");
     }

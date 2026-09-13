@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:casher_pos/features/sales/cubit/cart_state.dart';
 import 'package:casher_pos/features/sales/cubit/sales_cubit.dart';
 import 'package:casher_pos/features/sales/cubit/sales_state.dart';
@@ -9,8 +11,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class SalesScreen extends StatelessWidget {
+class SalesScreen extends StatefulWidget {
   const SalesScreen({super.key});
+
+  @override
+  State<SalesScreen> createState() => _SalesScreenState();
+}
+
+class _SalesScreenState extends State<SalesScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<SalesCubit>().loadProducts();
+  }
+
+  void _openCartModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // penting biar bisa custom height & gak kepotong keyboard
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.85, // atur tinggi modal, misal 85% layar
+          child: const CartWidget(), // widget cart kamu yang sudah ada
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,18 +157,24 @@ class SalesScreen extends StatelessWidget {
                                                     children: [
                                                       // Gambar - pakai Expanded, bukan AspectRatio
                                                       Expanded(
-                                                        child: Image.network(
-                                                          'https://picsum.photos/300/200?random=$index',
-                                                          fit: BoxFit.cover,
-                                                          width: double.infinity,
-                                                          height: 20,
-                                                          errorBuilder: (context, error, stackTrace) {
-                                                            return Container(
+                                                        child: product.imagePath != null && File(product.imagePath!).existsSync()
+                                                          ? Image.file(
+                                                              File(product.imagePath!),
+                                                              fit: BoxFit.cover,
+                                                              width: double.infinity,
+                                                              height: 20,
+                                                              errorBuilder: (context, error, stackTrace) {
+                                                                return Container(
+                                                                  color: Colors.grey[300],
+                                                                  child: Icon(Icons.image_not_supported, color: Colors.grey),
+                                                                );
+                                                              },
+                                                            )
+                                                          : Container(
                                                               color: Colors.grey[300],
+                                                              width: double.infinity,
                                                               child: Icon(Icons.image_not_supported, color: Colors.grey),
-                                                            );
-                                                          },
-                                                        ),
+                                                            ),
                                                       ),
                                                 
                                                       // Nama dan harga

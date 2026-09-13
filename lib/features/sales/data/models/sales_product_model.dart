@@ -5,12 +5,14 @@ class SalesProductModel extends Equatable {
   final String name;
   final int price;
   final int stock;
+  final String? imagePath;
 
   SalesProductModel({
     required this.id,
     required this.name,
     required this.price,
     required this.stock,
+    this.imagePath
   });
 
   @override
@@ -22,6 +24,7 @@ class SalesProductModel extends Equatable {
       name: raw['name'] as String,
       price: raw['price'] as int,
       stock: raw['stock'] as int,
+      imagePath: raw['image_path'] as String?
     );
   }
 }

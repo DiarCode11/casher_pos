@@ -1,5 +1,9 @@
 // shared/widgets/sidebar_menu.dart
+import 'package:casher_pos/core/di/injection.dart';
+import 'package:casher_pos/features/products/cubit/product_cubit.dart';
+import 'package:casher_pos/features/sales/cubit/sales_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -19,6 +23,14 @@ class SidebarMenu extends StatelessWidget {
     _MenuData(LucideIcons.users, 'User & Kasir'),     // Index 6
     _MenuData(LucideIcons.settings, 'Pengaturan'),    // Index 7
   ];
+
+  void _reloadCubit(BuildContext context, int index) {
+    if (index == 0) {
+      context.read<SalesCubit>().loadProducts();
+    } else if (index == 3) {
+      context.read<ProductCubit>().loadProducts();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +74,7 @@ class SidebarMenu extends StatelessWidget {
                   label: menu.label,
                   isActive: activeIndex == index,
                   onTap: () {
+                    _reloadCubit(context, index); // Reload data ketka berpindah
                     // Pindah tab menggunakan index branch
                     navigationShell.goBranch(
                       index,
