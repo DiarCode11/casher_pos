@@ -1,6 +1,7 @@
 import 'package:casher_pos/core/database/database_helper.dart';
 import 'package:casher_pos/core/di/injection.dart';
 import 'package:casher_pos/core/routes/app_router.dart';
+import 'package:casher_pos/features/categories/cubit/category_cubit.dart';
 import 'package:casher_pos/features/products/cubit/product_cubit.dart';
 import 'package:casher_pos/features/sales/cubit/cart_cubit.dart';
 import 'package:casher_pos/features/sales/cubit/sales_cubit.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
           return CartCubit(salesCubit: context.read<SalesCubit>());
         }),
          BlocProvider(create: (context) => getIt<ProductCubit>()..loadProducts()),
+         BlocProvider(create: (context) => getIt<CategoryCubit>()..loadCategories()),
       ], 
       child: MaterialApp.router(
         title: 'Casher POS',

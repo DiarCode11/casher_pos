@@ -1,4 +1,5 @@
 import 'package:casher_pos/features/products/presentation/screen/product_screen.dart';
+import 'package:casher_pos/features/purchase/presentation/screens/purchase_screen.dart';
 import 'package:casher_pos/features/sales/presentation/screens/sales_screen.dart';
 import 'package:casher_pos/shared/widgets/app_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ final appRouter = GoRouter(
         // Index 0: Penjualan
         StatefulShellBranch(routes: [GoRoute(path: '/sales', builder: (context, state) => const SalesScreen())]),
         // Index 1: Pembelian
-        StatefulShellBranch(routes: [GoRoute(path: '/purchases', builder: (context, state) => const ProductScreen())]),
+        StatefulShellBranch(routes: [GoRoute(path: '/purchases', builder: (context, state) => const PurchaseScreen())]),
         // Index 2: Transaksi
         StatefulShellBranch(routes: [GoRoute(path: '/transaction', builder: (context, state) => const ProductScreen())]),
         // Index 3: Produk

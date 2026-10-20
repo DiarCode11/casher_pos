@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:casher_pos/core/di/injection.dart';
 import 'package:casher_pos/features/products/cubit/product_cubit.dart';
 import 'package:casher_pos/features/products/data/dtos/store_product_dto.dart';
 import 'package:casher_pos/shared/widgets/image_picker_input.dart';

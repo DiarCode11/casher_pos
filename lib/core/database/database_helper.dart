@@ -1,5 +1,6 @@
 import 'package:casher_pos/core/abstracts/migration.dart';
 import 'package:casher_pos/core/database/migrations/m1_add_initial_tables.dart';
+import 'package:casher_pos/core/database/migrations/m2_add_categories_table.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -12,6 +13,7 @@ class DatabaseHelper {
 
   final List<Migration> _migrations = [
     M1AddInitialTables(),
+    M2AddCategoriesTable(),
   ];
 
   Future<Database> get database async {

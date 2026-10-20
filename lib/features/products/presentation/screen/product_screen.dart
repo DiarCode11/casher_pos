@@ -1,16 +1,16 @@
 import 'package:casher_pos/core/extensions/currency_ext.dart';
+import 'package:casher_pos/features/categories/cubit/category_cubit.dart';
 import 'package:casher_pos/features/products/cubit/product_cubit.dart';
 import 'package:casher_pos/features/products/cubit/product_state.dart';
 import 'package:casher_pos/features/products/data/models/product_model.dart';
 import 'package:casher_pos/features/products/presentation/widgets/update_modal.dart';
-import 'package:casher_pos/features/sales/cubit/sales_cubit.dart';
 import 'package:casher_pos/features/sales/cubit/sales_state.dart';
-import 'package:casher_pos/features/sales/data/models/sales_product_model.dart';
 import 'package:casher_pos/features/products/presentation/widgets/product_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:casher_pos/features/products/presentation/widgets/add_modal.dart';
+import 'package:casher_pos/features/products/presentation/widgets/category_modal.dart';
 
 DataRow _productRow(ProductModel product, int index, {
   required VoidCallback onEdit,
@@ -140,6 +140,20 @@ class ProductScreen extends StatelessWidget {
     );
   }
 
+  void _openCategoryProductDialog(BuildContext context) {
+    final categoryCubit = context.read<CategoryCubit>();
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (dialogContext) {
+        return BlocProvider.value(
+          value: categoryCubit,
+          child: const CategoryModal(),
+        );
+      },
+    );
+  }
+
   void _openUpdateProductDialog(BuildContext context, ProductModel model) {
     final productCubit = context.read<ProductCubit>();
     showDialog(
@@ -208,22 +222,44 @@ class ProductScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            _openAddProductDialog(context);
-                          },
-                          
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                        Row(
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                _openCategoryProductDialog(context);
+                              },
+                              
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.green.shade600,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Text(
+                                "Kategori Produk", 
+                                style: TextStyle(fontWeight: FontWeight(600),),),
                             ),
-                          ),
-                          child: Text(
-                            "Tambah Produk", 
-                            style: TextStyle(fontWeight: FontWeight(600)),),
+                            const SizedBox(width: 10,),
+                            TextButton(
+                              onPressed: () {
+                                _openAddProductDialog(context);
+                              },
+                              
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Text(
+                                "Tambah Produk", 
+                                style: TextStyle(fontWeight: FontWeight(600)),),
+                            ),
+                          ],
                         ),
                       ],
                     ),
